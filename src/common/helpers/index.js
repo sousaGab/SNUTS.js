@@ -1,3 +1,4 @@
+import { glob } from "glob";
 import fs from "node:fs";
 import { rimraf } from "rimraf";
 
@@ -5,6 +6,7 @@ class Helpers {
   checkIfFolderExist(path) {
     return fs.existsSync(path);
   }
+
   getRepositoryName(url) {
     const regex =
       /(?:https?:\/\/)?(?:www\.)?github\.com\/([a-zA-Z0-9-]+)\/([a-zA-Z0-9-]+)(?:\/.*)?/;
@@ -35,4 +37,21 @@ class Helpers {
       });
     });
   }
+
+  async findTestFiles(directory) {
+    const pattern = path.join(directory, /\.(test|spec)\.js$/);
+    return await glob(pattern, { ignore: "node_modules" });
+  }
+
+  parseFile(file) {
+    const code = fs.readFileSync(file, "utf8");
+    return parser.parse(code, {
+      sourceType: "module",
+      plugins: ["jsx", "typescript"],
+    });
+  }
 }
+
+const helpers = new Helpers();
+
+export default helpers;
