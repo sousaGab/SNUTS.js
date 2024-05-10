@@ -2,20 +2,29 @@
   "name": "mizu-js-test-smell-detector-api",
   "version": "1.0.0",
   "description": "a js test smell detector api",
-  "main": "index.js",
+  "main": "server.js",
   "author": "jhonatanmizu",
   "license": "MIT",
   "scripts": {
     "start": "node src/server.js",
-    "start:dev": "node --watch src/server.js"
+    "start:dev": "nodemon src/server.js"
   },
   "type": "module",
   "dependencies": {
     "@babel/parser": "^7.24.5",
     "@babel/traverse": "^7.24.5",
     "@babel/types": "^7.24.5",
-    "express": "^4.19.2",
+    "@fastify/cors": "^9.0.1",
+    "@fastify/helmet": "^11.1.1",
+    "@fastify/swagger": "^8.14.0",
+    "@fastify/swagger-ui": "^3.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.27.0",
     "glob": "^10.3.12",
     "rimraf": "^5.0.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
