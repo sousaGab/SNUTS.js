@@ -1,6 +1,9 @@
 import { glob } from "glob";
+import { exec } from "node:child_process";
 import fs from "node:fs";
 import { rimraf } from "rimraf";
+import path from "node:path";
+import parser from "@babel/parser";
 
 class Helpers {
   checkIfFolderExist(path) {
@@ -20,13 +23,10 @@ class Helpers {
     const dir = path.resolve(__dirname, "public", folder);
     return dir;
   }
-  deleteDownloadRepositories(directory = "") {
-    return new Promise(async (resolve, reject) => {
-      const exist = this.checkIfFolderExist(directory);
-      if (!exist) return reject(false);
-      const result = await rimraf(directory);
-      resolve(result);
-    });
+  async deleteDownloadRepositories(directory) {
+    const exist = this.checkIfFolderExist(directory);
+    if (!exist) return;
+    return await rimraf(directory);
   }
 
   downloadRepository(repoUrl, directory) {
@@ -39,7 +39,7 @@ class Helpers {
   }
 
   async findTestFiles(directory) {
-    const pattern = path.join(directory, /\.(test|spec)\.js$/);
+    const pattern = path.join(directory, "**/*.test.js");
     return await glob(pattern, { ignore: "node_modules" });
   }
 
