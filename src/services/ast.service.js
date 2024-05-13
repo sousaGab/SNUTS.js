@@ -1,7 +1,7 @@
 import traverse from "@babel/traverse";
 const traverseDefault = traverse.default;
 import * as t from "@babel/types";
-
+import parser from "@babel/parser";
 const defaultPlugins = [
   "classProperties",
   "dynamicImport",
@@ -54,9 +54,40 @@ class AstService {
     let itCount = 0;
     traverseDefault(ast, {
       CallExpression: ({ node }) => {
-        // if
+        if (this.isTestCase(node) && /it|test/g.test(node.callee.name)) {
+          itCount++;
+        }
       },
     });
+  }
+
+  getTestNodeAst(code) {
+    const ast = this.parseToAst(code);
+    let testNode;
+    traverseDefault(ast, {
+      CallExpression(path) {
+        if (jestSuiteAliases.includes(path.node.callee.name)) {
+          path.traverse({
+            CallExpression(describePath) {
+              if (jestTestAliases.includes(describePath.node.callee.name)) {
+                testNode = describePath;
+              }
+            },
+          });
+        } else if (jestSuiteAliases.includes(path.node.callee.name)) {
+          testNode = path;
+        }
+      },
+    });
+    return testNode;
+  }
+
+  parseToAst(code) {
+    try {
+      return parser.parse(code, configsFlow);
+    } catch (error) {
+      return parser.parse(code, configsTypescript);
+    }
   }
 
   isSetupMethod(node) {
@@ -97,7 +128,7 @@ class AstService {
         )
       );
     } catch (error) {
-      console.log(err);
+      console.error(err);
       let { end, start } = node.loc;
       console.table(start.line, end.line);
       throw err;
