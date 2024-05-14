@@ -2,7 +2,6 @@ import helpers from "../common/helpers/index.js";
 import path from "node:path";
 import { detectors } from "../common/detectors/index.js";
 import astService from "./ast.service.js";
-import { stringify } from "flatted";
 class AnalyzeService {
   async handleAnalyze(repoUrl) {
     try {
