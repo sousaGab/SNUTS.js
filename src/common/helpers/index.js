@@ -39,8 +39,9 @@ class Helpers {
   }
 
   async findTestFiles(directory) {
-    const pattern = path.join(directory, "**/*.test.js");
-    return await glob(pattern, { ignore: "node_modules" });
+    const testPattern = path.join(directory, "**/*.test.js");
+    const specPattern = path.join(directory, "**/*.spec.js");
+    return await glob([testPattern, specPattern], { ignore: "node_modules" });
   }
 
   parseFile(file) {
