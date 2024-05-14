@@ -3,6 +3,7 @@ const traverseDefault = traverse.default;
 import * as t from "@babel/types";
 import parser from "@babel/parser";
 import fs from "node:fs";
+
 const defaultPlugins = [
   "classProperties",
   "dynamicImport",
