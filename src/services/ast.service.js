@@ -2,6 +2,7 @@ import traverse from "@babel/traverse";
 const traverseDefault = traverse.default;
 import * as t from "@babel/types";
 import parser from "@babel/parser";
+import fs from "node:fs";
 const defaultPlugins = [
   "classProperties",
   "dynamicImport",
@@ -82,7 +83,8 @@ class AstService {
     return testNode;
   }
 
-  parseToAst(code) {
+  parseToAst(file) {
+    const code = fs.readFileSync(file, "utf8");
     try {
       return parser.parse(code, configsFlow);
     } catch (error) {
