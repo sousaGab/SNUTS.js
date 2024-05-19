@@ -2,6 +2,8 @@ import traverse from "@babel/traverse";
 const traverseDefault = traverse.default;
 import * as t from "@babel/types";
 import parser from "@babel/parser";
+import fs from "node:fs";
+
 const defaultPlugins = [
   "classProperties",
   "dynamicImport",
@@ -33,8 +35,8 @@ const jestTestAliases = ["it", "test"];
 class AstService {
   getTestInfo(ast) {
     return {
-      itCount: 1,
-      describeCount: 1,
+      itCount: this.getItCount(ast),
+      describeCount: this.getDescribeCount(ast),
     };
   }
 
@@ -59,6 +61,7 @@ class AstService {
         }
       },
     });
+    return itCount;
   }
 
   getTestNodeAst(code) {
@@ -82,7 +85,8 @@ class AstService {
     return testNode;
   }
 
-  parseToAst(code) {
+  parseToAst(file) {
+    const code = fs.readFileSync(file, "utf8");
     try {
       return parser.parse(code, configsFlow);
     } catch (error) {
@@ -100,17 +104,15 @@ class AstService {
   }
 
   isFunction(node) {
-    return (
-      types.isArrowFunctionExpression(node) || types.isFunctionExpression(node)
-    );
+    return t.isArrowFunctionExpression(node) || t.isFunctionExpression(node);
   }
 
   isTestCase(node) {
     const testCaseCallee = ["it", "test"];
     return (
-      types.isIdentifier(node.callee) &&
+      t.isIdentifier(node.callee) &&
       testCaseCallee.includes(node.callee.name) &&
-      types.isStringLiteral(node.arguments[0]) &&
+      t.isStringLiteral(node.arguments[0]) &&
       this.isFunction(node.arguments[1])
     );
   }
@@ -133,6 +135,23 @@ class AstService {
       console.table(start.line, end.line);
       throw err;
     }
+  }
+  hasManyComments(node, maxComments) {
+    let commentCount = 0;
+    // Traverse the function node to count comments
+    t.traverse(node, {
+      enter(path) {
+        if (path.isComment()) {
+          commentCount++;
+          // Stop traversing if the number of comments exceeds the maximum
+          if (commentCount > maxComments) {
+            path.stop();
+          }
+        }
+      },
+    });
+
+    return commentCount > maxComments;
   }
 }
 

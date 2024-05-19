@@ -7,7 +7,7 @@ const detectSensitiveEquality = (ast) => {
   const sensitiveEqualitySmells = [];
   traverseDefault(ast, {
     CallExpression(path) {
-      const { callee, arguments: args } = path.node;
+      const { callee, arguments: args, loc } = path.node;
       if (
         t.isMemberExpression(callee) &&
         t.isIdentifier(callee.property, { name: "toEqual" }) &&
@@ -16,11 +16,15 @@ const detectSensitiveEquality = (ast) => {
         t.isMemberExpression(args[0].callee) &&
         t.isIdentifier(args[0].callee.property, { name: "toString" })
       ) {
-        sensitiveEqualitySmells.push(path);
+        sensitiveEqualitySmells.push({
+          path,
+          startLine: loc.start.line,
+          endLine: loc.end.line,
+        });
       }
     },
     BinaryExpression(path) {
-      const { left, right } = path.node;
+      const { left, right, loc } = path.node;
       if (
         t.isCallExpression(left) &&
         t.isMemberExpression(left.callee) &&
@@ -31,7 +35,11 @@ const detectSensitiveEquality = (ast) => {
         t.isMemberExpression(right.callee.object) &&
         t.isIdentifier(right.callee.object.property, { name: "toString" })
       ) {
-        sensitiveEqualitySmells.push(path);
+        sensitiveEqualitySmells.push({
+          path,
+          startLine: loc.start.line,
+          endLine: loc.end.line,
+        });
       }
     },
   });

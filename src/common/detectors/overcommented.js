@@ -4,8 +4,8 @@ import astService from "../../services/ast.service.js";
 
 const traverseDefault = traverse.default;
 
-const detectAnonymousTest = (ast) => {
-  const anonymousTestSmells = [];
+const detectOvercommentedTest = (ast) => {
+  const overcommentedTestSmells = [];
   traverseDefault(ast, {
     CallExpression(path) {
       const { callee, arguments: args, loc } = path.node;
@@ -13,10 +13,9 @@ const detectAnonymousTest = (ast) => {
         if (
           /it|test/.test(node.callee.name) &&
           astService.isFunction(args[1]) &&
-          (!t.isIdentifier(args[0]) ||
-            (t.isIdentifier(args[0]) && !/^\w+(\s\w+)?$/.test(args[0].name))) // Validation if has one or two words in regex
+          astService.hasManyComments(args[1], 5) // Check if the test function has more than 5 comments
         ) {
-          anonymousTestSmells.push({
+          overcommentedTestSmells.push({
             path,
             startLine: loc.start.line,
             endLine: loc.end.line,
@@ -25,7 +24,7 @@ const detectAnonymousTest = (ast) => {
       }
     },
   });
-  return anonymousTestSmells;
+  return overcommentedTestSmells;
 };
 
-export default detectAnonymousTest;
+export default detectOvercommentedTest;

@@ -10,7 +10,11 @@ configDotenv();
 const port = process.env.PORT || 3000;
 
 const fastify = Fastify({
-  logger: true,
+  logger: {
+    transport: {
+      target: "pino-pretty",
+    },
+  },
 });
 
 fastify.register(swagger, {
