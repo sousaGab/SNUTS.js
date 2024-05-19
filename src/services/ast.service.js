@@ -35,8 +35,8 @@ const jestTestAliases = ["it", "test"];
 class AstService {
   getTestInfo(ast) {
     return {
-      itCount: 1,
-      describeCount: 1,
+      itCount: this.getItCount(ast),
+      describeCount: this.getDescribeCount(ast),
     };
   }
 
@@ -61,6 +61,7 @@ class AstService {
         }
       },
     });
+    return itCount;
   }
 
   getTestNodeAst(code) {
@@ -103,17 +104,15 @@ class AstService {
   }
 
   isFunction(node) {
-    return (
-      types.isArrowFunctionExpression(node) || types.isFunctionExpression(node)
-    );
+    return t.isArrowFunctionExpression(node) || t.isFunctionExpression(node);
   }
 
   isTestCase(node) {
     const testCaseCallee = ["it", "test"];
     return (
-      types.isIdentifier(node.callee) &&
+      t.isIdentifier(node.callee) &&
       testCaseCallee.includes(node.callee.name) &&
-      types.isStringLiteral(node.arguments[0]) &&
+      t.isStringLiteral(node.arguments[0]) &&
       this.isFunction(node.arguments[1])
     );
   }
