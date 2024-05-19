@@ -136,6 +136,23 @@ class AstService {
       throw err;
     }
   }
+  hasManyComments(node, maxComments) {
+    let commentCount = 0;
+    // Traverse the function node to count comments
+    t.traverse(node, {
+      enter(path) {
+        if (path.isComment()) {
+          commentCount++;
+          // Stop traversing if the number of comments exceeds the maximum
+          if (commentCount > maxComments) {
+            path.stop();
+          }
+        }
+      },
+    });
+
+    return commentCount > maxComments;
+  }
 }
 
 const astService = new AstService();
