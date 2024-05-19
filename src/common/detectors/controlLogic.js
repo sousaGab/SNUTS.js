@@ -1,6 +1,6 @@
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
-
+// TODO: Search about this smells in others places and found a example
 const traverseDefault = traverse.default;
 
 const detectControlLogic = (ast) => {
@@ -12,6 +12,7 @@ const detectControlLogic = (ast) => {
     SwitchStatement(path) {
       controlLogicTestSmells.push(path);
     },
+    // TODO remove call expression
     CallExpression(path) {
       const { callee } = path.node;
       if (
