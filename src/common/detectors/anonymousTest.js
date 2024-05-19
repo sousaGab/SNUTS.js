@@ -13,7 +13,8 @@ const detectAnonymousTest = (ast) => {
         if (
           t.isIdentifier(callee, { name: "test" }) &&
           astService.isFunction(args[1]) &&
-          !t.isIdentifier(args[0])
+          (!t.isIdentifier(args[0]) ||
+            (t.isIdentifier(args[0]) && !/^\w+(\s\w+)?$/.test(args[0].name))) // Validation if has one or two words in regex
         ) {
           anonymousTestSmells.push({
             path,
