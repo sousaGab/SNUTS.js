@@ -10,15 +10,26 @@ class AnalyzeService {
       // await helpers.deleteDownloadRepositories(directory);
       // await helpers.downloadRepository(repoUrl, directory);
       const testFiles = await helpers.findTestFiles(directory);
-      const astFiles = testFiles.map((tf) => astService.parseToAst(tf));
-      const result = [];
-      astFiles.forEach((ast) => {
-        detectors.forEach((detector) => {
-          const smells = detector(ast);
-          result.push({ smell: detector.name, smells });
+      const astFiles = testFiles.map((tf) => {
+        const testAst = astService.parseToAst(tf);
+        const smells = detectors.map((detector) => detector(testAst));
+        return detectors.map((detector) => {
+          return {
+            file: tf,
+            type: detector.name.replace("detect", ""),
+            smells: detector(testAst).length,
+            info: astService.getTestInfo(testAst),
+          };
         });
       });
-      return result;
+      // const result = [];
+      // astFiles.forEach((ast) => {
+      //   detectors.forEach((detector) => {
+      //     const smells = detector(ast);
+      //     result.push({ smell: detector.name, smells });
+      //   });
+      // });
+      return astFiles;
     } catch (error) {
       console.error("Error when we tried to handle analyze", error);
     }
