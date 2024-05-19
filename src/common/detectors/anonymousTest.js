@@ -11,7 +11,7 @@ const detectAnonymousTest = (ast) => {
       const { callee, arguments: args, loc } = path.node;
       if (args.length >= 2) {
         if (
-          t.isIdentifier(callee, { name: "test" }) &&
+          /it|test/.test(node.callee.name) &&
           astService.isFunction(args[1]) &&
           (!t.isIdentifier(args[0]) ||
             (t.isIdentifier(args[0]) && !/^\w+(\s\w+)?$/.test(args[0].name))) // Validation if has one or two words in regex

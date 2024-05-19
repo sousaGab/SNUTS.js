@@ -9,7 +9,7 @@ const detectCommentsOnlyTest = (ast) => {
     CallExpression(path) {
       const { callee, arguments: args, loc } = path.node;
       if (
-        t.isIdentifier(callee, { name: "test" }) &&
+        /it|test/.test(node.callee.name) &&
         args.length >= 2 &&
         args[1].leadingComments &&
         args[1].leadingComments.length > 0 &&

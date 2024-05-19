@@ -11,7 +11,7 @@ const detectOvercommentedTest = (ast) => {
       const { callee, arguments: args, loc } = path.node;
       if (args.length >= 2) {
         if (
-          t.isIdentifier(callee, { name: "test" }) &&
+          /it|test/.test(node.callee.name) &&
           astService.isFunction(args[1]) &&
           astService.hasManyComments(args[1], 5) // Check if the test function has more than 5 comments
         ) {

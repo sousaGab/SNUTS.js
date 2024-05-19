@@ -30,7 +30,7 @@ const detectGeneralFixture = (ast) => {
             });
           }
         }
-      } else if (t.isIdentifier(callee, { name: "test" }) && args.length >= 2) {
+      } else if (/it|test/.test(node.callee.name) && args.length >= 2) {
         const testBody = args[1].body;
         if (t.isBlockStatement(testBody)) {
           traverseDefault(testBody, {
