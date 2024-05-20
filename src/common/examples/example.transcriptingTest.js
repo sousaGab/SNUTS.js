@@ -1,3 +1,4 @@
+const exampleTranscriptingTest = `
 test("Test 1", () => {
   console.log("Logging to the console");
   expect(someFunction()).toBe(true);
@@ -17,3 +18,5 @@ test("Test 4", () => {
   console.info("Info message");
   expect(anotherFunction()).toBe(false);
 });
+`;
+export default exampleTranscriptingTest;
