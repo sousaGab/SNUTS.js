@@ -5,61 +5,75 @@ const traverseDefault = traverse.default;
 
 const detectTranscriptingTest = (ast) => {
   const transcriptingTestSmells = [];
+
   traverseDefault(ast, {
     CallExpression(path) {
       const { callee, arguments: args, loc } = path.node;
       if (
-        /it|test/.test(node.callee.name) &&
+        (t.isIdentifier(callee, { name: "it" }) ||
+          t.isIdentifier(callee, { name: "test" })) &&
         args.length >= 2 &&
-        (hasConsoleLog(args[1]) ||
-          hasConsoleError(args[1]) ||
-          hasConsoleWarn(args[1]) ||
-          hasConsoleInfo(args[1]))
+        t.isFunction(args[1])
       ) {
-        transcriptingTestSmells.push({
-          path,
-          startLine: loc.start.line,
-          endLine: loc.end.line,
-        });
+        const body = args[1].body.body;
+        for (const statement of body) {
+          if (
+            hasConsoleLog(statement) ||
+            hasConsoleError(statement) ||
+            hasConsoleWarn(statement) ||
+            hasConsoleInfo(statement)
+          ) {
+            transcriptingTestSmells.push({
+              startLine: loc.start.line,
+              endLine: loc.end.line,
+            });
+            break;
+          }
+        }
       }
     },
   });
+
   return transcriptingTestSmells;
 };
 
 const hasConsoleLog = (node) => {
   return (
-    t.isCallExpression(node) &&
-    t.isMemberExpression(node.callee) &&
-    t.isIdentifier(node.callee.object, { name: "console" }) &&
-    t.isIdentifier(node.callee.property, { name: "log" })
+    t.isExpressionStatement(node) &&
+    t.isCallExpression(node.expression) &&
+    t.isMemberExpression(node.expression.callee) &&
+    t.isIdentifier(node.expression.callee.object, { name: "console" }) &&
+    t.isIdentifier(node.expression.callee.property, { name: "log" })
   );
 };
 
 const hasConsoleError = (node) => {
   return (
-    t.isCallExpression(node) &&
-    t.isMemberExpression(node.callee) &&
-    t.isIdentifier(node.callee.object, { name: "console" }) &&
-    t.isIdentifier(node.callee.property, { name: "error" })
+    t.isExpressionStatement(node) &&
+    t.isCallExpression(node.expression) &&
+    t.isMemberExpression(node.expression.callee) &&
+    t.isIdentifier(node.expression.callee.object, { name: "console" }) &&
+    t.isIdentifier(node.expression.callee.property, { name: "error" })
   );
 };
 
 const hasConsoleWarn = (node) => {
   return (
-    t.isCallExpression(node) &&
-    t.isMemberExpression(node.callee) &&
-    t.isIdentifier(node.callee.object, { name: "console" }) &&
-    t.isIdentifier(node.callee.property, { name: "warn" })
+    t.isExpressionStatement(node) &&
+    t.isCallExpression(node.expression) &&
+    t.isMemberExpression(node.expression.callee) &&
+    t.isIdentifier(node.expression.callee.object, { name: "console" }) &&
+    t.isIdentifier(node.expression.callee.property, { name: "warn" })
   );
 };
 
 const hasConsoleInfo = (node) => {
   return (
-    t.isCallExpression(node) &&
-    t.isMemberExpression(node.callee) &&
-    t.isIdentifier(node.callee.object, { name: "console" }) &&
-    t.isIdentifier(node.callee.property, { name: "info" })
+    t.isExpressionStatement(node) &&
+    t.isCallExpression(node.expression) &&
+    t.isMemberExpression(node.expression.callee) &&
+    t.isIdentifier(node.expression.callee.object, { name: "console" }) &&
+    t.isIdentifier(node.expression.callee.property, { name: "info" })
   );
 };
 

@@ -2,7 +2,7 @@ import Fastify from "fastify";
 // Controllers
 import analyzeController from "../controllers/analyze.controller.js";
 
-const analyzeRoutes = async (fastify = Fastify(), options) => {
+const analyzeRoutes = async (fastify = Fastify()) => {
   fastify.get(
     "/",
     {

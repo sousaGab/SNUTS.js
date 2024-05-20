@@ -12,6 +12,8 @@ const detectGeneralFixture = (ast) => {
   traverseDefault(ast, {
     CallExpression(path) {
       const { callee, arguments: args } = path.node;
+
+      // Detect variables set up in beforeAll or beforeEach
       if (
         t.isIdentifier(callee, { name: "beforeAll" }) ||
         t.isIdentifier(callee, { name: "beforeEach" })
@@ -30,10 +32,13 @@ const detectGeneralFixture = (ast) => {
             });
           }
         }
-      } else if (/it|test/.test(node.callee.name) && args.length >= 2) {
+      }
+      // Detect usage of setup variables in test cases
+      else if (/^(it|test)$/.test(callee.name) && args.length >= 2) {
         const testBody = args[1].body;
         if (t.isBlockStatement(testBody)) {
           traverseDefault(testBody, {
+            noScope: true, // Prevents creation of new scope
             Identifier(innerPath) {
               if (setupVariables.has(innerPath.node.name)) {
                 usedVariables.add(innerPath.node.name);
@@ -45,6 +50,7 @@ const detectGeneralFixture = (ast) => {
     },
   });
 
+  // Identify general fixture smells
   setupVariables.forEach((variable) => {
     if (!usedVariables.has(variable)) {
       generalFixtureSmells.push(variable);

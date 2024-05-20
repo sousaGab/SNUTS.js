@@ -77,6 +77,7 @@ class AstService {
               }
             },
           });
+          // eslint-disable-next-line
         } else if (jestSuiteAliases.includes(path.node.callee.name)) {
           testNode = path;
         }
@@ -90,6 +91,7 @@ class AstService {
     try {
       return parser.parse(code, configsFlow);
     } catch (error) {
+      console.error(error);
       return parser.parse(code, configsTypescript);
     }
   }
@@ -130,10 +132,10 @@ class AstService {
         )
       );
     } catch (error) {
-      console.error(err);
+      console.error(error);
       let { end, start } = node.loc;
       console.table(start.line, end.line);
-      throw err;
+      throw error;
     }
   }
   hasManyComments(node, maxComments) {

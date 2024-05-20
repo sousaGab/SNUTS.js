@@ -16,7 +16,7 @@ class Helpers {
     const match = url.match(regex);
     return match ? { userName: match[1], projectName: match[2] } : null;
   }
-  getRepositoryFolder() {
+  getRepositoryFolder(repoUrl) {
     const __dirname = path.dirname("");
     const { userName, projectName } = this.getRepositoryName(repoUrl);
     const folder = `${userName}/${projectName}`;

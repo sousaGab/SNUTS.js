@@ -12,23 +12,15 @@ class AnalyzeService {
       const testFiles = await helpers.findTestFiles(directory);
       const astFiles = testFiles.map((tf) => {
         const testAst = astService.parseToAst(tf);
-        const smells = detectors.map((detector) => detector(testAst));
         return detectors.map((detector) => {
           return {
             file: tf,
             type: detector.name.replace("detect", ""),
-            smells: detector(testAst).length,
+            smells: detector(testAst),
             info: astService.getTestInfo(testAst),
           };
         });
       });
-      // const result = [];
-      // astFiles.forEach((ast) => {
-      //   detectors.forEach((detector) => {
-      //     const smells = detector(ast);
-      //     result.push({ smell: detector.name, smells });
-      //   });
-      // });
       return astFiles;
     } catch (error) {
       console.error("Error when we tried to handle analyze", error);

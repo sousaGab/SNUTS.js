@@ -4,6 +4,11 @@ import astService from "../../services/ast.service.js";
 
 const traverseDefault = traverse.default;
 
+const hasManyOfTwoWords = (text = "") => {
+  const result = text.split(" ");
+  return result.length > 2;
+};
+
 const detectAnonymousTest = (ast) => {
   const anonymousTestSmells = [];
   traverseDefault(ast, {
@@ -11,13 +16,12 @@ const detectAnonymousTest = (ast) => {
       const { callee, arguments: args, loc } = path.node;
       if (args.length >= 2) {
         if (
-          /it|test/.test(node.callee.name) &&
+          /^(it|test)$/.test(callee.name) &&
           astService.isFunction(args[1]) &&
-          (!t.isIdentifier(args[0]) ||
-            (t.isIdentifier(args[0]) && !/^\w+(\s\w+)?$/.test(args[0].name))) // Validation if has one or two words in regex
+          t.isStringLiteral(args[0]) &&
+          !hasManyOfTwoWords(args[0].value)
         ) {
           anonymousTestSmells.push({
-            path,
             startLine: loc.start.line,
             endLine: loc.end.line,
           });
