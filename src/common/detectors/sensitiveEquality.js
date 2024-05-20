@@ -1,48 +1,80 @@
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
-
+import parser from "@babel/parser";
 const traverseDefault = traverse.default;
+
+const jestMatchers = new Set([
+  "toEqual",
+  "toStrictEqual",
+  "toBe",
+  "toMatchObject",
+]);
+
+const jasmineMatchers = new Set(["toEqual", "toBe", "toMatch"]);
+
+const isToStringMemberExpression = (node) => {
+  return (
+    t.isCallExpression(node) &&
+    t.isMemberExpression(node.callee) &&
+    t.isIdentifier(node.callee.property, { name: "toString" })
+  );
+};
 
 const detectSensitiveEquality = (ast) => {
   const sensitiveEqualitySmells = [];
+
+  const detectCallExpression = (path) => {
+    const { callee, arguments: args, loc } = path.node;
+
+    if (
+      t.isMemberExpression(callee) &&
+      t.isIdentifier(callee.property) &&
+      (jestMatchers.has(callee.property.name) ||
+        jasmineMatchers.has(callee.property.name)) &&
+      args.length > 0 &&
+      isToStringMemberExpression(args[0])
+    ) {
+      sensitiveEqualitySmells.push({
+        startLine: loc.start.line,
+        endLine: loc.end.line,
+      });
+    }
+  };
+
+  const detectBinaryExpression = (path) => {
+    const { left, right, loc } = path.node;
+    if (isToStringMemberExpression(left) || isToStringMemberExpression(right)) {
+      sensitiveEqualitySmells.push({
+        startLine: loc.start.line,
+        endLine: loc.end.line,
+      });
+    }
+  };
+
   traverseDefault(ast, {
-    CallExpression(path) {
-      const { callee, arguments: args, loc } = path.node;
-      if (
-        t.isMemberExpression(callee) &&
-        t.isIdentifier(callee.property, { name: "toEqual" }) &&
-        args.length === 1 &&
-        t.isCallExpression(args[0]) &&
-        t.isMemberExpression(args[0].callee) &&
-        t.isIdentifier(args[0].callee.property, { name: "toString" })
-      ) {
-        sensitiveEqualitySmells.push({
-          startLine: loc.start.line,
-          endLine: loc.end.line,
-        });
-      }
-    },
-    BinaryExpression(path) {
-      const { left, right, loc } = path.node;
-      if (
-        t.isCallExpression(left) &&
-        t.isMemberExpression(left.callee) &&
-        t.isMemberExpression(left.callee.object) &&
-        t.isIdentifier(left.callee.object.property, { name: "toString" }) &&
-        t.isCallExpression(right) &&
-        t.isMemberExpression(right.callee) &&
-        t.isMemberExpression(right.callee.object) &&
-        t.isIdentifier(right.callee.object.property, { name: "toString" })
-      ) {
-        sensitiveEqualitySmells.push({
-          path,
-          startLine: loc.start.line,
-          endLine: loc.end.line,
-        });
-      }
-    },
+    CallExpression: detectCallExpression,
+    BinaryExpression: detectBinaryExpression,
   });
+
   return sensitiveEqualitySmells;
 };
+
+// Example JavaScript code to analyze
+const code = `
+  test('example test', () => {
+    const str = 'example';
+    expect(str.toString()).toEqual('example');
+  });
+`;
+
+// Parse the code to generate the AST
+const ast = parser.parse(code, {
+  sourceType: "module",
+  plugins: ["jsx"],
+});
+
+// Run the analysis
+const results = detectSensitiveEquality(ast);
+// console.log(results);
 
 export default detectSensitiveEquality;
