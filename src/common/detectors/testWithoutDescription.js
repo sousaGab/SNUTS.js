@@ -9,11 +9,14 @@ const detectTestWithoutDescription = (ast) => {
   traverseDefault(ast, {
     CallExpression(path) {
       const { callee, arguments: args, loc } = path.node;
-      if (/it|test/.test(node.callee.name) && args.length >= 2) {
+      if (/^(it|test)$/.test(callee.name) && args.length >= 2) {
         const isAnyTypeOfFunction = astService.isFunction(args[1]);
-        if (isAnyTypeOfFunction && !t.isStringLiteral(args[0])) {
+        if (
+          isAnyTypeOfFunction &&
+          t.isStringLiteral(args[0]) &&
+          args[0].value.trim() === ""
+        ) {
           testsWithoutDescription.push({
-            path,
             startLine: loc.start.line,
             endLine: loc.end.line,
           });
