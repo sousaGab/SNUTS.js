@@ -20,7 +20,6 @@ const detectCommentsOnlyTest = (ast) => {
         const testBody = args[1].body;
         if (t.isBlockStatement(testBody) && isCommentsOnly(testBody.body)) {
           commentsOnlyTestSmells.push({
-            // path,
             startLine: loc.start.line,
             endLine: loc.end.line,
           });

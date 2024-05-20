@@ -17,7 +17,6 @@ const detectSensitiveEquality = (ast) => {
         t.isIdentifier(args[0].callee.property, { name: "toString" })
       ) {
         sensitiveEqualitySmells.push({
-          path,
           startLine: loc.start.line,
           endLine: loc.end.line,
         });

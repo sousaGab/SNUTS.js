@@ -22,7 +22,6 @@ const detectAnonymousTest = (ast) => {
           !hasManyOfTwoWords(args[0].value)
         ) {
           anonymousTestSmells.push({
-            // path,
             startLine: loc.start.line,
             endLine: loc.end.line,
           });
