@@ -7,8 +7,8 @@ class AnalyzeService {
     try {
       const __dirname = path.dirname("");
       const directory = path.resolve(__dirname, "./public");
-      // await helpers.deleteDownloadRepositories(directory);
-      // await helpers.downloadRepository(repoUrl, directory);
+      await helpers.deleteDownloadRepositories(directory);
+      await helpers.downloadRepository(repoUrl, directory);
       const testFiles = await helpers.findTestFiles(directory);
       const astFiles = testFiles.map((tf) => {
         const testAst = astService.parseToAst(tf);
@@ -24,6 +24,7 @@ class AnalyzeService {
       return astFiles;
     } catch (error) {
       console.error("Error when we tried to handle analyze", error);
+      return [];
     }
   }
 }
