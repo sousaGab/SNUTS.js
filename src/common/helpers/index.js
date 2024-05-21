@@ -4,6 +4,8 @@ import fs from "node:fs";
 import { rimraf } from "rimraf";
 import path from "node:path";
 import parser from "@babel/parser";
+import process from "node:process";
+const isWin = process.platform === "win32";
 
 class Helpers {
   checkIfFolderExist(path) {
@@ -60,6 +62,7 @@ class Helpers {
       ],
       {
         ignore: "node_modules",
+        windowsPathsNoEscape: isWin,
       }
     );
   }
