@@ -15,6 +15,7 @@ const defaultPlugins = [
   "@babel/plugin-proposal-do-expressions",
   "@babel/plugin-proposal-destructuring-private",
   "@babel/plugin-syntax-import-assertions",
+  "importAttributes",
 ];
 
 const configsTypescript = {
