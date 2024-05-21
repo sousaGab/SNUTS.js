@@ -43,9 +43,25 @@ class Helpers {
     const testsPattern = path.join(directory, "**/*.tests.js");
     const specPattern = path.join(directory, "**/*.spec.js");
     const specsPattern = path.join(directory, "**/*.specs.js");
-    return await glob([testPattern, specPattern, specsPattern, testsPattern], {
-      ignore: "node_modules",
-    });
+    const testUnderscore = path.join(directory, "**/*test_*.js");
+    const anotherTestPattern = path.join(directory, "**/*test-*.js");
+
+    const specCamelCase = path.join(directory, "**/*Spec*.js");
+
+    return await glob(
+      [
+        testPattern,
+        specPattern,
+        specsPattern,
+        testsPattern,
+        testUnderscore,
+        specCamelCase,
+        anotherTestPattern,
+      ],
+      {
+        ignore: "node_modules",
+      }
+    );
   }
 
   parseFile(file) {
