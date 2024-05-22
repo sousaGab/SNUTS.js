@@ -8,8 +8,10 @@ class AnalyzeService {
       const __dirname = path.dirname("");
       const directory = path.resolve(__dirname, "./public");
       await helpers.deleteDownloadRepositories(directory);
-      await helpers.downloadRepository(repoUrl, directory);
+      const repoFolder = helpers.getRepositoryFolder(repoUrl);
+      await helpers.downloadRepository(repoUrl, repoFolder);
       const testFiles = await helpers.findTestFiles(directory);
+
       const astFiles = testFiles.map((tf) => {
         const testAst = astService.parseToAst(tf);
         return detectors.map((detector) => {
