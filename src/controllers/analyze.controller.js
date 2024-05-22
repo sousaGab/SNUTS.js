@@ -1,13 +1,29 @@
+import { detectors } from "../common/detectors/index.js";
 import analyzeService from "../services/analyze.service.js";
 class AnalyzeController {
   async fetch(request, reply) {
-    reply.send({ hello: "world" });
+    const data = detectors.map((detector) =>
+      detector.name.replace("detect", "")
+    );
+    reply.send({ data });
   }
 
   async store(request, reply) {
-    const { repository } = request.body;
-    const result = await analyzeService.handleAnalyze(repository);
-    reply.send({ data: result });
+    const { repository, hastTestSmell } = request.body;
+    try {
+      const result = await analyzeService.handleAnalyze(repository);
+
+      const filteredResult = hastTestSmell
+        ? result.filter((re) => !!re.smells && re.smells.length > 0)
+        : result;
+
+      reply.send({ data: filteredResult });
+    } catch (error) {
+      console.error("error", error);
+      reply
+        .status(500)
+        .send({ message: "Ocorreu um erro ao tentar analisar o repositório" });
+    }
   }
 }
 
