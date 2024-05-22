@@ -7,6 +7,7 @@ import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 configDotenv();
 
+const host = process.env.HOST || "localhost";
 const port = process.env.PORT || 3000;
 
 const fastify = Fastify({
@@ -73,7 +74,7 @@ fastify.get("/ping", function (request, reply) {
 });
 
 const handleStartServer = async () => {
-  return await fastify.listen({ port }, (err, address) => {
+  return await fastify.listen({ host, port }, (err, address) => {
     if (err) {
       fastify.log.error(err);
       process.exit(1);
