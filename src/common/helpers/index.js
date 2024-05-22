@@ -4,6 +4,18 @@ import fs from "node:fs";
 import { rimraf } from "rimraf";
 import path from "node:path";
 import parser from "@babel/parser";
+import process from "node:process";
+const isWin = process.platform === "win32";
+
+const TEST_FILE_PATTERNS = [
+  "**/*.test.js",
+  "**/*.tests.js",
+  "**/*.spec.js",
+  "**/*.specs.js",
+  "**/*test_*.js",
+  "**/*test-*.js",
+  "**/*Spec*.js",
+];
 
 class Helpers {
   checkIfFolderExist(path) {
@@ -39,29 +51,18 @@ class Helpers {
   }
 
   async findTestFiles(directory) {
-    const testPattern = path.join(directory, "**/*.test.js");
-    const testsPattern = path.join(directory, "**/*.tests.js");
-    const specPattern = path.join(directory, "**/*.spec.js");
-    const specsPattern = path.join(directory, "**/*.specs.js");
-    const testUnderscore = path.join(directory, "**/*test_*.js");
-    const anotherTestPattern = path.join(directory, "**/*test-*.js");
-
-    const specCamelCase = path.join(directory, "**/*Spec*.js");
-
-    return await glob(
-      [
-        testPattern,
-        specPattern,
-        specsPattern,
-        testsPattern,
-        testUnderscore,
-        specCamelCase,
-        anotherTestPattern,
-      ],
-      {
-        ignore: "node_modules",
-      }
+    const options = {
+      ignore: "node_modules",
+      cwd: directory,
+      windowsPathsNoEscape: isWin,
+      absolute: true,
+      nodir: true,
+    };
+    const testFiles = await Promise.all(
+      TEST_FILE_PATTERNS.map((pattern) => glob(pattern, options))
     );
+
+    return testFiles.flat();
   }
 
   parseFile(file) {

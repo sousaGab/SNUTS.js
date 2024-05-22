@@ -1,24 +1,31 @@
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
-
 const traverseDefault = traverse.default;
 
 const countComments = (node) => {
-  let commentCount = 0;
+  const commentsSet = new Set(); // Use a set to avoid duplicates
 
   traverseDefault(node, {
     noScope: true, // Prevents creation of new scope
     enter(path) {
       if (path.node.leadingComments) {
-        commentCount += path.node.leadingComments.length;
+        path.node.leadingComments.forEach((comment) => {
+          commentsSet.add(comment.value.trim());
+        });
       }
       if (path.node.trailingComments) {
-        commentCount += path.node.trailingComments.length;
+        path.node.trailingComments.forEach((comment) => {
+          commentsSet.add(comment.value.trim());
+        });
+      }
+      if (path.node.innerComments) {
+        path.node.innerComments.forEach((comment) => {
+          commentsSet.add(comment.value.trim());
+        });
       }
     },
   });
-
-  return commentCount;
+  return commentsSet.size; // Return the size of the set
 };
 
 const hasManyComments = (node, threshold) => {
