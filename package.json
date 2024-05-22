@@ -6,7 +6,7 @@
   "author": "jhonatanmizu",
   "license": "MIT",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "pm2 start process.yml",
     "start:dev": "node --watch src/server.js",
     "lint": "yarn run eslint src/*",
     "test": "vitest test/",
@@ -26,6 +26,7 @@
     "fastify": "^4.27.0",
     "glob": "^10.3.12",
     "pino-pretty": "^11.0.0",
+    "pm2": "^5.3.1",
     "rimraf": "^5.0.5"
   },
   "repository": "https://github.com/Jhonatanmizu/mizu-js-test-smell-detector-api.git",
