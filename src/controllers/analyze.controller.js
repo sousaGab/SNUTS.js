@@ -9,11 +9,10 @@ class AnalyzeController {
   }
 
   async store(request, reply) {
-    const { repository, hastTestSmell } = request.body;
+    const { repository, hasTestSmell } = request.body;
     try {
       const result = await analyzeService.handleAnalyze(repository);
-
-      const filteredResult = hastTestSmell
+      const filteredResult = hasTestSmell
         ? result.filter((re) => !!re.smells && re.smells.length > 0)
         : result;
 
