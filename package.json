@@ -6,7 +6,7 @@
   "author": "jhonatanmizu",
   "license": "MIT",
   "scripts": {
-    "start": "pm2 start process.yml",
+    "start": "pm2 start process.yml -i max -f --no-daemon",
     "start:dev": "node --watch src/server.js",
     "lint": "yarn run eslint src/*",
     "test": "vitest test/",
