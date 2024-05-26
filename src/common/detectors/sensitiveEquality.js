@@ -1,6 +1,5 @@
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
-import parser from "@babel/parser";
 const traverseDefault = traverse.default;
 
 const jestMatchers = new Set([
