@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { server } from "../src/server.js";
 
-const host = process.env.HOST;
-const port = process.env.PORT;
+const host = process.env.HOST || "localhost";
+const port = process.env.PORT || 3000;
 
 describe("Server", () => {
   beforeAll(async () => {
