@@ -10,6 +10,7 @@
     "start:dev": "node --watch src/server.js",
     "lint": "yarn run eslint src/*",
     "test": "vitest test/",
+    "test:watch": "vitest --watch test/",
     "test:coverage": "vitest run --coverage test/"
   },
   "type": "module",
