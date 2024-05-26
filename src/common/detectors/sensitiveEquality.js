@@ -1,6 +1,5 @@
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
-import parser from "@babel/parser";
 const traverseDefault = traverse.default;
 
 const jestMatchers = new Set([
@@ -59,6 +58,8 @@ const detectSensitiveEquality = (ast) => {
   return sensitiveEqualitySmells;
 };
 
+/*
+TODO: check failsafe
 // Example JavaScript code to analyze
 const code = `
   test('example test', () => {
@@ -76,5 +77,5 @@ const ast = parser.parse(code, {
 // Run the analysis
 const results = detectSensitiveEquality(ast);
 // console.log(results);
-
+*/
 export default detectSensitiveEquality;
