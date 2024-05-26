@@ -21,7 +21,11 @@ class Helpers {
   checkIfFolderExist(path) {
     return fs.existsSync(path);
   }
-
+  getPathAfterPublic(filePath) {
+    const regex = /\/public\/(.+)/;
+    const match = filePath.match(regex);
+    return match ? match[1] : null;
+  }
   isValidRepositoryUrl(url) {
     const regex =
       /(?:https?:\/\/)?(?:www\.)?(github|gitlab)\.com\/([a-zA-Z0-9-]+)\/([a-zA-Z0-9-]+)(?:\/.*)?/;
