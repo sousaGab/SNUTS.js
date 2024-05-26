@@ -21,16 +21,32 @@ class Helpers {
   checkIfFolderExist(path) {
     return fs.existsSync(path);
   }
-
-  getRepositoryName(url) {
+  getPathAfterPublic(filePath) {
+    const regex = /\/public\/(.+)/;
+    const match = filePath.match(regex);
+    return match ? match[1] : null;
+  }
+  isValidRepositoryUrl(url) {
     const regex =
-      /(?:https?:\/\/)?(?:www\.)?github\.com\/([a-zA-Z0-9-]+)\/([a-zA-Z0-9-]+)(?:\/.*)?/;
+      /(?:https?:\/\/)?(?:www\.)?(github|gitlab)\.com\/([a-zA-Z0-9-]+)\/([a-zA-Z0-9-]+)(?:\/.*)?/;
+    return regex.test(url);
+  }
+  getRepositoryInfo(url) {
+    const regex =
+      /(?:https?:\/\/)?(?:www\.)?(github|gitlab)\.com\/([a-zA-Z0-9-]+)\/([a-zA-Z0-9-]+)(?:\/.*)?/;
     const match = url.match(regex);
-    return match ? { userName: match[1], projectName: match[2] } : null;
+
+    if (match) {
+      // eslint-disable-next-line
+      const [_, platform, userName, projectName] = match;
+      return { platform, userName, projectName };
+    }
+
+    return null;
   }
   getRepositoryFolder(repoUrl) {
     const __dirname = path.dirname("");
-    const { userName, projectName } = this.getRepositoryName(repoUrl);
+    const { userName, projectName } = this.getRepositoryInfo(repoUrl);
     const folder = `${userName}/${projectName}`;
     const dir = path.resolve(__dirname, "public", folder);
     return dir;

@@ -37,6 +37,26 @@ const analyzeRoutes = async (fastify = Fastify()) => {
     },
     analyzeController.store
   );
+  fastify.post(
+    "/get-csv",
+    {
+      schema: {
+        description: "post repository url and get csv as result",
+        tags: ["analyze"],
+        body: {
+          type: "object",
+          properties: {
+            repository: {
+              type: "string",
+              description: "URL of the repository",
+            },
+          },
+        },
+        required: ["repository"],
+      },
+    },
+    analyzeController.getCSV
+  );
 };
 
 export default analyzeRoutes;
