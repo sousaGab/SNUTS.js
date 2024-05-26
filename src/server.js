@@ -22,20 +22,16 @@ fastify.register(swagger, {
   openapi: {
     openapi: "3.0.0",
     info: {
-      title: "Test Smell.js Detector API",
+      title: "SNUTS.js: Sniffing Nasty Unit Test Smells in Javascript",
       description:
-        "This API can detect test smells in javascript repositories.",
+        "This API can detect test smells in javascript public repositories.",
       version: "0.1.0",
     },
-    tags: [
-      { name: "analyze", description: "Analyze related end-points" },
-      { name: "code", description: "Code related end-points" },
-    ],
-
-    externalDocs: {
-      url: "https://swagger.io",
-      description: "Find more info here",
-    },
+    tags: [{ name: "analyze", description: "Analyze related end-points" }],
+    // externalDocs: {
+    //   url: "https://swagger.io",
+    //   description: "Find more info here",
+    // },
     apis: ["./routes/*.js"],
   },
 });
