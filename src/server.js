@@ -10,7 +10,7 @@ configDotenv();
 const host = process.env.HOST || "localhost";
 const port = process.env.PORT || 3000;
 
-const fastify = Fastify({
+const server = Fastify({
   logger: {
     transport: {
       target: "pino-pretty",
@@ -18,7 +18,7 @@ const fastify = Fastify({
   },
 });
 
-fastify.register(swagger, {
+server.register(swagger, {
   openapi: {
     openapi: "3.0.0",
     info: {
@@ -36,7 +36,7 @@ fastify.register(swagger, {
   },
 });
 
-fastify.register(swaggerUi, {
+server.register(swaggerUi, {
   routePrefix: "/documentation",
   uiConfig: {
     docExpansion: "full",
@@ -58,25 +58,36 @@ fastify.register(swaggerUi, {
   transformSpecificationClone: true,
 });
 
-fastify.register(helmet);
-fastify.register(cors, {
+server.register(helmet);
+server.register(cors, {
   origin: "*",
 });
 
-fastify.register(analyzeRoutes);
+server.register(analyzeRoutes);
 
-fastify.get("/ping", function (request, reply) {
+server.get("/ping", (request, reply) => {
   reply.send({ message: "pong" });
 });
 
+server.get("/health", (request, reply) => {
+  reply.send({ status: "ok" });
+});
+
 const handleStartServer = async () => {
-  return await fastify.listen({ host, port }, (err, address) => {
+  await server.listen({ host, port }, (err, address) => {
     if (err) {
-      fastify.log.error(err);
+      server.log.error(err);
       process.exit(1);
     }
     console.log(`Server is now listening on http://localhost:${address}`);
   });
+  return server;
 };
 
+const handleStopServer = async () => {
+  await server.close();
+  return server;
+};
 handleStartServer();
+
+export { handleStartServer, handleStopServer, server };
