@@ -1,4 +1,4 @@
-# Mizu JS Test Smell Detector API
+# SNUTS.js: Sniffing Nasty Unit Test Smells in Javascript API
 
 This API is designed to detect test smells in JavaScript codebases. It provides endpoints to analyze JavaScript test files and identify common test smells.
 
@@ -8,8 +8,8 @@ This API is designed to detect test smells in JavaScript codebases. It provides 
 - Express.js
 - JavaScript
 - Yarn
-- babel
-- vitest
+- Babel
+- Vitest
 
 ## Setup
 
