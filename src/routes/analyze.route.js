@@ -38,7 +38,7 @@ const analyzeRoutes = async (fastify = Fastify()) => {
     analyzeController.store
   );
   fastify.post(
-    "/get-csv",
+    "/export-csv",
     {
       schema: {
         description: "post repository url and get csv as result",
