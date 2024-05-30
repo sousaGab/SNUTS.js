@@ -32,7 +32,7 @@ class AnalyzeController {
         ? result.filter((re) => !!re.smells && re.smells.length > 0)
         : result;
 
-      reply.send({ data: filteredResult });
+      reply.send(filteredResult);
     } catch (error) {
       console.error("error", error);
       reply
