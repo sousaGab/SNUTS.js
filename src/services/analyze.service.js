@@ -16,7 +16,7 @@ class AnalyzeService {
         const testInfo = astService.getTestInfo(testAst);
         return detectors.map((detector) => {
           return {
-            file: tf,
+            file: helpers.getPathAfterPublic(tf),
             type: detector.name.replace("detect", ""),
             smells: detector(testAst),
             info: testInfo,
