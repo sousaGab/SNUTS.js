@@ -18,13 +18,13 @@ To run this project locally, follow these steps:
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/Jhonatanmizu/mizu-js-test-smell-detector-api.git
+   git clone https://github.com/Jhonatanmizu/SNUTS.js.git
    ```
 
 2. Install dependencies:
 
    ```sh
-   cd mizu-js-test-smell-detector-api
+   cd SNUTS.js
    yarn
    ```
 
@@ -34,7 +34,7 @@ To run this project locally, follow these steps:
    yarn start
    ```
 
-4. The API will be accessible at `http://localhost:3000`.
+4. The API will be accessible at `http://localhost:3001`.
 
 ## Endpoints
 
