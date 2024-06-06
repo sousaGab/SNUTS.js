@@ -57,6 +57,26 @@ const analyzeRoutes = async (fastify = Fastify()) => {
     },
     analyzeController.getCSV
   );
+  fastify.post(
+    "/count",
+    {
+      schema: {
+        description: "post repository url and get the number of test files",
+        tags: ["analyze"],
+        body: {
+          type: "object",
+          properties: {
+            repository: {
+              type: "string",
+              description: "URL of the repository",
+            },
+          },
+        },
+        required: ["repository"],
+      },
+    },
+    analyzeController.countTestFiles
+  );
 };
 
 export default analyzeRoutes;

@@ -86,15 +86,17 @@ class AstService {
     });
     return testNode;
   }
-
-  parseToAst(file) {
-    const code = fs.readFileSync(file, "utf8");
+  parseCodeToAst(code) {
     try {
       return parser.parse(code, configsFlow);
     } catch (error) {
       console.error(error);
       return parser.parse(code, configsTypescript);
     }
+  }
+  parseFileToAst(file) {
+    const code = fs.readFileSync(file, "utf8");
+    return this.parseCodeToAst(code);
   }
 
   isSetupMethod(node) {

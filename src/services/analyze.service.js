@@ -5,14 +5,14 @@ import astService from "./ast.service.js";
 
 class AnalyzeService {
   async handleAnalyze(repoUrl) {
+    const __dirname = path.dirname("");
+    const directory = path.resolve(__dirname, "./public");
+    const repoFolder = helpers.getRepositoryFolder(repoUrl);
     try {
-      const __dirname = path.dirname("");
-      const directory = path.resolve(__dirname, "./public");
-      const repoFolder = helpers.getRepositoryFolder(repoUrl);
       await helpers.downloadRepository(repoUrl, repoFolder);
       const testFiles = await helpers.findTestFiles(directory);
       const astFiles = testFiles.map((tf) => {
-        const testAst = astService.parseToAst(tf);
+        const testAst = astService.parseFileToAst(tf);
         const testInfo = astService.getTestInfo(testAst);
         return detectors.map((detector) => {
           return {
@@ -26,19 +26,20 @@ class AnalyzeService {
       await helpers.deleteDownloadRepositories(directory);
       return astFiles.flat();
     } catch (error) {
+      await helpers.deleteDownloadRepositories(directory);
       console.error("Error when we tried to handle analyze", error);
-      return [];
+      throw error;
     }
   }
   async handleAnalyzeToCSV(repoUrl) {
+    const __dirname = path.dirname("");
+    const directory = path.resolve(__dirname, "./public");
+    const repoFolder = helpers.getRepositoryFolder(repoUrl);
     try {
-      const __dirname = path.dirname("");
-      const directory = path.resolve(__dirname, "./public");
-      const repoFolder = helpers.getRepositoryFolder(repoUrl);
       await helpers.downloadRepository(repoUrl, repoFolder);
       const testFiles = await helpers.findTestFiles(directory);
       const astFiles = testFiles.map((tf) => {
-        const testAst = astService.parseToAst(tf);
+        const testAst = astService.parseFileToAst(tf);
         const testInfo = astService.getTestInfo(testAst);
         return detectors.map((detector) => {
           return {
@@ -53,8 +54,25 @@ class AnalyzeService {
       await helpers.deleteDownloadRepositories(directory);
       return astFiles.flat();
     } catch (error) {
+      await helpers.deleteDownloadRepositories(directory);
       console.error("Error when we tried to handle analyze to csv", error);
-      return [];
+      throw error;
+    }
+  }
+
+  async countTestFiles(repoUrl) {
+    const __dirname = path.dirname("");
+    const directory = path.resolve(__dirname, "./public");
+    const repoFolder = helpers.getRepositoryFolder(repoUrl);
+    try {
+      await helpers.downloadRepository(repoUrl, repoFolder);
+      const testFiles = await helpers.findTestFiles(directory);
+      await helpers.deleteDownloadRepositories(directory);
+      return testFiles.length;
+    } catch (error) {
+      await helpers.deleteDownloadRepositories(directory);
+      console.error("Error when we tried to count test files", error);
+      throw error;
     }
   }
 }
