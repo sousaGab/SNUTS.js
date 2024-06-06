@@ -77,6 +77,33 @@ class AnalyzeController {
         .send({ message: "Ocorreu um erro ao tentar analisar o repositório" });
     }
   }
+
+  async countTestFiles(request, reply) {
+    const { repository } = request.body;
+    if (!repository) {
+      return reply
+        .status(403)
+        .send({ message: "You should provide the repository url" });
+    }
+    const isAValidRepository = helpers.isValidRepositoryUrl(repository);
+
+    if (!isAValidRepository) {
+      return reply
+        .status(422)
+        .send({ message: "You should provide a valid repository url" });
+    }
+
+    try {
+      const result = await analyzeService.countTestFiles(repository);
+      reply.send(result);
+    } catch (error) {
+      console.error("Error when we tried to count test files", error);
+      reply.status(500).send({
+        message:
+          "Ocorreu um erro ao tentar contar os arquivos de teste do repositório",
+      });
+    }
+  }
 }
 
 const analyzeController = new AnalyzeController();
