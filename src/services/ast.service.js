@@ -94,7 +94,7 @@ class AstService {
       return parser.parse(code, configsTypescript);
     }
   }
-  parseToAst(file) {
+  parseFileToAst(file) {
     const code = fs.readFileSync(file, "utf8");
     return this.parseCodeToAst(code);
   }
