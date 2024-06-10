@@ -1,15 +1,12 @@
-/// <reference types="vitest" />
-import { defineConfig } from "vite";
+import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
-    // ... Specify options here.
     exclude: [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/cypress/**",
-      "**/.{idea,git,cache,output,temp}/**",
-      "**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*",
+      ...configDefaults.exclude,
+      "**/examples/**",
+      "/src/common/examples",
+      "/public",
       "**/public/**",
     ],
   },

@@ -9,9 +9,9 @@
     "start": "pm2 start process.yml -i max -f --no-daemon",
     "start:dev": "node --watch src/server.js",
     "lint": "yarn run eslint src/*",
-    "test": "vitest run test/",
-    "test:watch": "vitest test/",
-    "test:coverage": "vitest run --coverage test/"
+    "test": "vitest run --config  ./vitest.config.js test/",
+    "test:watch": "vitest --config  ./vitest.config.js test/",
+    "test:coverage": "vitest run --config  ./vitest.config.js --coverage test/"
   },
   "type": "module",
   "dependencies": {
