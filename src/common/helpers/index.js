@@ -5,7 +5,8 @@ import { rimraf } from "rimraf";
 import path from "node:path";
 import parser from "@babel/parser";
 import process from "node:process";
-const isWin = process.platform === "win32";
+
+const IS_WIN_SO = process.platform === "win32";
 
 const TEST_FILE_PATTERNS = [
   "**/*.test.js",
@@ -70,7 +71,7 @@ class Helpers {
     const options = {
       ignore: "node_modules",
       cwd: directory,
-      windowsPathsNoEscape: isWin,
+      windowsPathsNoEscape: IS_WIN_SO,
       absolute: true,
       nodir: true,
     };

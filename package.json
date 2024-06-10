@@ -9,8 +9,8 @@
     "start": "pm2 start process.yml -i max -f --no-daemon",
     "start:dev": "node --watch src/server.js",
     "lint": "yarn run eslint src/*",
-    "test": "vitest test/",
-    "test:watch": "vitest --watch test/",
+    "test": "vitest run test/",
+    "test:watch": "vitest test/",
     "test:coverage": "vitest run --coverage test/"
   },
   "type": "module",
@@ -31,11 +31,12 @@
     "pm2": "^5.3.1",
     "rimraf": "^5.0.5"
   },
-  "repository": "https://github.com/Jhonatanmizu/mizu-js-test-smell-detector-api.git",
+  "repository": "https://github.com/Jhonatanmizu/snutsjs.git",
   "devDependencies": {
     "@eslint/js": "^9.3.0",
     "@vitest/coverage-v8": "^1.6.0",
     "eslint": "9.x",
+    "git-commit-msg-linter": "^5.0.8",
     "globals": "^15.3.0",
     "vitest": "^1.6.0"
   }
