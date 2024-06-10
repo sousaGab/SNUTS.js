@@ -1,0 +1,57 @@
+import detectAnonymousTest from "../../../src/common/detectors/anonymousTest";
+import { expect, it, describe } from "vitest";
+import astService from "../../../src/services/ast.service";
+
+describe("AnonymousTest", () => {
+  it("should detect anonymous test with it block", () => {
+    const code = `
+            it("some test", () =>{
+                expect(10).toBe(10)
+            })
+        `;
+    const ast = astService.parseCodeToAst(code);
+    const result = detectAnonymousTest(ast);
+    expect(result).toBeDefined();
+    expect(result).toHaveLength(1);
+  });
+
+  it("should detect anonymous test with test block", () => {
+    const code = `
+    test("some test", () =>{
+        expect(10).toBe(10)
+    })
+`;
+    const ast = astService.parseCodeToAst(code);
+    const result = detectAnonymousTest(ast);
+    expect(result).toBeDefined();
+    expect(result).toHaveLength(1);
+  });
+  it("should detect many anonymous test ", () => {
+    const code = `
+    test("some test", () =>{
+        expect(10).toBe(10)
+    })
+    it("sum",() =>{
+        expect(10).toBe(10)
+    })
+`;
+    const ast = astService.parseCodeToAst(code);
+    const result = detectAnonymousTest(ast);
+    expect(result).toBeDefined();
+    expect(result).toHaveLength(2);
+  });
+  it("should return an array of detected anonymous test", () => {
+    const code = `
+    test("some test", () =>{
+        expect(10).toBe(10)
+    })
+    it("sum",() =>{
+        expect(10).toBe(10)
+    })
+`;
+    const ast = astService.parseCodeToAst(code);
+    const result = detectAnonymousTest(ast);
+    expect(result).toBeDefined();
+    expect(result).toBeInstanceOf(Array);
+  });
+});
