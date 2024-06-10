@@ -143,6 +143,19 @@ class AstService {
       throw error;
     }
   }
+  hasAssertion(ast) {
+    let isValid = false;
+    const checkIsAssert = this.isAssert;
+    traverse(ast, {
+      ExpressionStatement(path) {
+        if (checkIsAssert(path.node)) {
+          isValid = true;
+        }
+      },
+    });
+    return isValid;
+  }
+
   hasManyComments(node, maxComments) {
     let commentCount = 0;
     // Traverse the function node to count comments
