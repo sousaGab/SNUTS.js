@@ -2,7 +2,8 @@ import traverse from "@babel/traverse";
 import * as t from "@babel/types";
 import astService from "../../services/ast.service.js";
 
-const traverseDefault = traverse.default;
+const traverseDefault =
+  typeof traverse === "function" ? traverse : traverse.default;
 
 const hasManyOfTwoWords = (text = "") => {
   const result = text.split(" ");
@@ -13,10 +14,10 @@ const detectAnonymousTest = (ast) => {
   const anonymousTestSmells = [];
   traverseDefault(ast, {
     CallExpression(path) {
-      const { callee, arguments: args, loc } = path.node;
+      const { arguments: args, loc } = path.node;
       if (args.length >= 2) {
         if (
-          /^(it|test)$/.test(callee.name) &&
+          astService.isTestCase(path.node) &&
           astService.isFunction(args[1]) &&
           t.isStringLiteral(args[0]) &&
           !hasManyOfTwoWords(args[0].value)
