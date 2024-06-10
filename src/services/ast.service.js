@@ -1,5 +1,4 @@
 import traverse from "@babel/traverse";
-const traverseDefault = traverse.default;
 import * as t from "@babel/types";
 import parser from "@babel/parser";
 import fs from "node:fs";
@@ -34,6 +33,9 @@ const jestSuiteAliases = ["describe"];
 const jestTestAliases = ["it", "test"];
 
 class AstService {
+  traverseDefault =
+    typeof traverse === "function" ? traverse : traverse.default;
+
   getTestInfo(ast) {
     return {
       itCount: this.getItCount(ast),
@@ -43,7 +45,7 @@ class AstService {
 
   getDescribeCount(ast) {
     let describeCount = 0;
-    traverseDefault(ast, {
+    this.traverseDefault(ast, {
       CallExpression: ({ node }) => {
         if (node.callee.name === "describe") {
           describeCount++;
@@ -55,7 +57,7 @@ class AstService {
 
   getItCount(ast) {
     let itCount = 0;
-    traverseDefault(ast, {
+    this.traverseDefault(ast, {
       CallExpression: ({ node }) => {
         if (this.isTestCase(node) && /it|test/g.test(node.callee.name)) {
           itCount++;
@@ -66,9 +68,9 @@ class AstService {
   }
 
   getTestNodeAst(code) {
-    const ast = this.parseToAst(code);
+    const ast = this.parseCodeToAst(code);
     let testNode;
-    traverseDefault(ast, {
+    this.traverseDefault(ast, {
       CallExpression(path) {
         if (jestSuiteAliases.includes(path.node.callee.name)) {
           path.traverse({
