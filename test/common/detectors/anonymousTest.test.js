@@ -54,4 +54,20 @@ describe("AnonymousTest", () => {
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
   });
+
+  it("should return an empty array when does not have any description with less than 2 words", () => {
+    const code = `
+    test("some test done", () =>{
+        expect(10).toBe(10)
+    })
+    it("sum test stuff",() =>{
+        expect(10).toBe(10)
+    })
+`;
+    const ast = astService.parseCodeToAst(code);
+    const result = detectAnonymousTest(ast);
+    expect(result).toBeDefined();
+    expect(result).toBeInstanceOf(Array);
+    expect(result).toHaveLength(0);
+  });
 });
