@@ -1,17 +1,18 @@
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
+import astService from "../../services/ast.service";
 
-const traverseDefault = traverse.default;
+const traverseDefault =
+  typeof traverse === "function" ? traverse : traverse.default;
 
 const detectTranscriptingTest = (ast) => {
   const transcriptingTestSmells = [];
 
   traverseDefault(ast, {
     CallExpression(path) {
-      const { callee, arguments: args, loc } = path.node;
+      const { arguments: args, loc } = path.node;
       if (
-        (t.isIdentifier(callee, { name: "it" }) ||
-          t.isIdentifier(callee, { name: "test" })) &&
+        astService.isTestCase(path.node) &&
         args.length >= 2 &&
         t.isFunction(args[1])
       ) {
