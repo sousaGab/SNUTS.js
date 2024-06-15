@@ -1,6 +1,7 @@
 import traverse from "@babel/traverse";
-import * as t from "@babel/types";
-const traverseDefault = traverse.default;
+import astService from "../../services/ast.service";
+const traverseDefault =
+  typeof traverse === "function" ? traverse : traverse.default;
 
 const countComments = (node) => {
   const commentsSet = new Set(); // Use a set to avoid duplicates
@@ -36,11 +37,11 @@ const detectOvercommentedTest = (ast) => {
   const overcommentedTestSmells = [];
   traverseDefault(ast, {
     CallExpression(path) {
-      const { callee, arguments: args, loc } = path.node;
+      const { arguments: args, loc } = path.node;
       if (args.length >= 2) {
         if (
-          /^(it|test)$/.test(callee.name) &&
-          t.isFunction(args[1]) &&
+          astService.isTestCase(path.node) &&
+          astService.isFunction(args[1]) &&
           hasManyComments(args[1], 5) // Check if the test function has more than 5 comments
         ) {
           overcommentedTestSmells.push({
