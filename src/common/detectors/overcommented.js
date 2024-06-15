@@ -1,5 +1,5 @@
 import traverse from "@babel/traverse";
-import astService from "../../services/ast.service";
+import astService from "../../services/ast.service.js";
 const traverseDefault =
   typeof traverse === "function" ? traverse : traverse.default;
 
