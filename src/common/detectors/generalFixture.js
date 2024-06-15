@@ -1,25 +1,28 @@
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
 import astService from "../../services/ast.service.js";
-const traverseDefault = traverse.default;
+const traverseDefault =
+  typeof traverse === "function" ? traverse : traverse.default;
 
 const detectGeneralFixture = (ast) => {
-  const setupVariables = new Map(); // Using a Map for easier lookup
+  const setupVariables = new Map();
   const usedVariables = new Set();
   const generalFixtureSmells = [];
 
   const detectSetupVariables = (setupBody) => {
     if (t.isBlockStatement(setupBody)) {
       setupBody.body.forEach((statement) => {
-        if (t.isVariableDeclaration(statement)) {
-          statement.declarations.forEach((declaration) => {
-            if (t.isIdentifier(declaration.id)) {
-              setupVariables.set(declaration.id.name, {
-                startLine: declaration.loc.start.line,
-                endLine: declaration.loc.end.line,
-              });
-            }
-          });
+        if (
+          t.isExpressionStatement(statement) &&
+          t.isAssignmentExpression(statement.expression)
+        ) {
+          const { left } = statement.expression;
+          if (t.isIdentifier(left)) {
+            setupVariables.set(left.name, {
+              startLine: statement.loc.start.line,
+              endLine: statement.loc.end.line,
+            });
+          }
         }
       });
     }
@@ -36,20 +39,14 @@ const detectGeneralFixture = (ast) => {
         if (args.length >= 1 && astService.isFunction(args[0])) {
           detectSetupVariables(args[0].body);
         }
-      } else if (/^(it|test)$/.test(callee.name) && args.length >= 2) {
+      } else if (astService.isTestCase(path.node) && args.length >= 2) {
         const testBody = args[1].body;
         if (t.isBlockStatement(testBody)) {
           traverseDefault(testBody, {
             noScope: true,
             Identifier(innerPath) {
               if (setupVariables.has(innerPath.node.name)) {
-                usedVariables.add({
-                  name: innerPath.node.name,
-                  loc: {
-                    startLine: innerPath.node.loc.start.line,
-                    endLine: innerPath.node.loc.end.line,
-                  },
-                });
+                usedVariables.add(innerPath.node.name);
               }
             },
           });
@@ -58,14 +55,9 @@ const detectGeneralFixture = (ast) => {
     },
   });
 
-  setupVariables.forEach((_, variable) => {
+  setupVariables.forEach((value, variable) => {
     if (!usedVariables.has(variable)) {
-      const { startLine, endLine } = setupVariables.get(variable);
-      generalFixtureSmells.push({
-        // ...variable,
-        startLine,
-        endLine,
-      });
+      generalFixtureSmells.push(value);
     }
   });
 

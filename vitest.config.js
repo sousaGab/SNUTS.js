@@ -8,6 +8,7 @@ export default defineConfig({
       "/src/common/examples",
       "/public",
       "**/public/**",
+      "**/examples/**",
     ],
   },
 });
