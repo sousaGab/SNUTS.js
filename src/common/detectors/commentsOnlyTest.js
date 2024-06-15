@@ -1,6 +1,9 @@
 import traverse from "@babel/traverse";
 import * as t from "@babel/types";
-const traverseDefault = traverse.default;
+import astService from "../../services/ast.service";
+
+const traverseDefault =
+  typeof traverse === "function" ? traverse : traverse.default;
 
 const isCommentsOnly = (body) => {
   // Check if the body consists only of comments
@@ -21,8 +24,8 @@ const detectCommentsOnlyTest = (ast) => {
   const commentsOnlyTestSmells = [];
   traverseDefault(ast, {
     CallExpression(path) {
-      const { callee, arguments: args, loc } = path.node;
-      if (/^(it|test)$/.test(callee.name) && args.length >= 2) {
+      const { arguments: args, loc } = path.node;
+      if (astService.isTestCase(path.node) && args.length >= 2) {
         const testBody = args[1].body;
         if (t.isBlockStatement(testBody) && isCommentsOnly(testBody.body)) {
           commentsOnlyTestSmells.push({
