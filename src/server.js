@@ -61,6 +61,7 @@ server.register(swaggerUi, {
 server.register(helmet);
 server.register(cors, {
   origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 });
 
 server.register(analyzeRoutes);
