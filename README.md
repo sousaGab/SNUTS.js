@@ -66,10 +66,6 @@ curl -X POST http://localhost:3000/ -H "Content-Type: application/json" -d '{"re
 
 If you'd like to contribute to this project, please fork the repository and submit a pull request. You can also open an issue to report bugs or suggest new features.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ---
 
 Let me know if you need any further adjustments or additions!
