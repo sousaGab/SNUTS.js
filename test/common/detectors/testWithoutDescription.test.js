@@ -8,11 +8,13 @@ describe("TestWithoutDescriptions", () => {
       expect(str.toString()).toEqual("example");
     });
     `;
+    const expectedNumberOfSmells = 1;
+
     const ast = astService.parseCodeToAst(code);
     const result = detectTestWithoutDescription(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
 
   it("should not detect when a test case has description", () => {
@@ -21,10 +23,12 @@ describe("TestWithoutDescriptions", () => {
       expect(str.toString()).toEqual("example");
     });
     `;
+    const expectedNumberOfSmells = 0;
+
     const ast = astService.parseCodeToAst(code);
     const result = detectTestWithoutDescription(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(0);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
 });
