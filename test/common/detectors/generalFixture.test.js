@@ -25,12 +25,12 @@ test("admin should have an age", () => {
 });
 })
 `;
-
+    const expectedNumberOfSmells = 1;
     const ast = astService.parseCodeToAst(code);
     const result = detectGeneralFixture(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
   it("should not detect general fixture when some setup variable are block scoped", () => {
     const code = `
@@ -50,11 +50,11 @@ test("admin should have an age", () => {
 });
 })
 `;
-
+    const expectedNumberOfSmells = 0;
     const ast = astService.parseCodeToAst(code);
     const result = detectGeneralFixture(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(0);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
 });

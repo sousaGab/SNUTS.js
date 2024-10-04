@@ -41,12 +41,13 @@ describe("OvercommentedTest", () => {
         });
       });
     `;
+    const expectedNumberOfSmells = 1;
 
     const ast = astService.parseCodeToAst(code);
     const result = detectOvercommentedTest(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
 
   it("should not detect overcomment test when test block has only comments", () => {
@@ -61,11 +62,11 @@ describe("OvercommentedTest", () => {
      */
       });
     `;
-
+    const expectedNumberOfSmells = 0;
     const ast = astService.parseCodeToAst(code);
     const result = detectOvercommentedTest(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(0);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
 });

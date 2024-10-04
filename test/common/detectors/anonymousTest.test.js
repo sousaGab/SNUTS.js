@@ -11,8 +11,9 @@ describe("AnonymousTest", () => {
         `;
     const ast = astService.parseCodeToAst(code);
     const result = detectAnonymousTest(ast);
+    const expectedNumberOfSmells = 1;
     expect(result).toBeDefined();
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
 
   it("should detect anonymous test with test block", () => {
@@ -23,8 +24,9 @@ describe("AnonymousTest", () => {
 `;
     const ast = astService.parseCodeToAst(code);
     const result = detectAnonymousTest(ast);
+    const expectedNumberOfSmells = 1;
     expect(result).toBeDefined();
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
   it("should detect many anonymous test ", () => {
     const code = `
@@ -64,10 +66,11 @@ describe("AnonymousTest", () => {
         expect(10).toBe(10)
     })
 `;
+    const expectedNumberOfSmells = 0;
     const ast = astService.parseCodeToAst(code);
     const result = detectAnonymousTest(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(0);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
 });
