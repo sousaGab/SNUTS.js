@@ -26,11 +26,12 @@ describe("CommentsOnlyTest", () => {
         we should know about this comment
       */
     })`;
+    const expectedNumberOfSmells = 1;
     const ast = astService.parseCodeToAst(code);
     const result = detectCommentsOnlyTest(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
 
   it("should not detect comments only when the test block has one comment and uncommented code", () => {
@@ -42,10 +43,11 @@ describe("CommentsOnlyTest", () => {
       */
      expect(true).toBeTruthy()
     })`;
+    const expectedNumberOfSmells = 0;
     const ast = astService.parseCodeToAst(code);
     const result = detectCommentsOnlyTest(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(0);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
 });
