@@ -9,11 +9,14 @@ describe("TranscriptingTest", () => {
         console.log("transcripting test");
     })
 `;
+
+    const expectedNumberOfSmells = 1;
+
     const ast = astService.parseCodeToAst(code);
     const result = detectTranscriptingTest(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
   it("should detect transcripting test when the test block has console.warn", () => {
     const code = `
@@ -21,11 +24,13 @@ describe("TranscriptingTest", () => {
         console.warn("transcripting test");
     })
 `;
+    const expectedNumberOfSmells = 1;
+
     const ast = astService.parseCodeToAst(code);
     const result = detectTranscriptingTest(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
   it("should detect transcripting test when the test block has console.error", () => {
     const code = `
@@ -33,11 +38,13 @@ describe("TranscriptingTest", () => {
         console.error("transcripting test");
     })
 `;
+    const expectedNumberOfSmells = 1;
+
     const ast = astService.parseCodeToAst(code);
     const result = detectTranscriptingTest(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
   it("should detect transcripting test when the test block has console.info", () => {
     const code = `
@@ -45,11 +52,13 @@ describe("TranscriptingTest", () => {
         console.info("transcripting test");
     })
 `;
+    const expectedNumberOfSmells = 1;
+
     const ast = astService.parseCodeToAst(code);
     const result = detectTranscriptingTest(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
   it("should not detect transcripting test when the test block does not have some console function", () => {
     const code = `
@@ -57,11 +66,12 @@ describe("TranscriptingTest", () => {
       // Check is some
     })
 `;
+    const expectedNumberOfSmells = 0;
     const ast = astService.parseCodeToAst(code);
     const result = detectTranscriptingTest(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(0);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
   it("should not detect transcripting test when the test block does  have some console function in comment", () => {
     const code = `
@@ -69,10 +79,11 @@ describe("TranscriptingTest", () => {
       // console.log("test comment")
     })
 `;
+    const expectedNumberOfSmells = 0;
     const ast = astService.parseCodeToAst(code);
     const result = detectTranscriptingTest(ast);
     expect(result).toBeDefined();
     expect(result).toBeInstanceOf(Array);
-    expect(result).toHaveLength(0);
+    expect(result).toHaveLength(expectedNumberOfSmells);
   });
 });
