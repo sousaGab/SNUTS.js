@@ -58,24 +58,4 @@ const detectSensitiveEquality = (ast) => {
   return sensitiveEqualitySmells;
 };
 
-/*
-TODO: check failsafe
-// Example JavaScript code to analyze
-const code = `
-  test('example test', () => {
-    const str = 'example';
-    expect(str.toString()).toEqual('example');
-  });
-`;
-
-// Parse the code to generate the AST
-const ast = parser.parse(code, {
-  sourceType: "module",
-  plugins: ["jsx"],
-});
-
-// Run the analysis
-const results = detectSensitiveEquality(ast);
-// console.log(results);
-*/
 export default detectSensitiveEquality;
