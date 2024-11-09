@@ -23,7 +23,7 @@ class Helpers {
     return fs.existsSync(path);
   }
   getPathAfterPublic(filePath) {
-    const regex = /\/public\/(.+)/;
+    const regex = /[\\/]+public[\\/]+(.+)/;
     const match = filePath.match(regex);
     return match ? match[1] : null;
   }
