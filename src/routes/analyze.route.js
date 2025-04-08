@@ -77,6 +77,26 @@ const analyzeRoutes = async (fastify = Fastify()) => {
     },
     analyzeController.countTestFiles
   );
+  fastify.post(
+    "/export-csv-local",
+    {
+      schema: {
+        description: "get local files and get csv as result",
+        tags: ["analyze"],
+        body: {
+          type: "object",
+          properties: {
+            directory: {
+              type: "string",
+              description: "directory of the project",
+            },
+          },
+        },
+        required: ["directory"],
+      },
+    },
+    analyzeController.getCSVLocal
+  );
 };
 
 export default analyzeRoutes;

@@ -32,6 +32,10 @@ class Helpers {
       /(?:https?:\/\/)?(?:www\.)?(github|gitlab)\.com\/([a-zA-Z0-9-]+)\/([a-zA-Z0-9-]+)(?:\/.*)?/;
     return regex.test(url);
   }
+  isValidDirectory(dirname) {
+    const regex = /^[a-zA-Z0-9._\-\/]+$/;
+    return regex.test(dirname);
+  }
   getRepositoryInfo(url) {
     const regex =
       /(?:https?:\/\/)?(?:www\.)?(github|gitlab)\.com\/([a-zA-Z0-9-]+)\/([a-zA-Z0-9-]+)(?:\/.*)?/;

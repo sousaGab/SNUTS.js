@@ -78,6 +78,45 @@ class AnalyzeController {
     }
   }
 
+  async getCSVLocal(request, reply) {
+    const { directory } = request.body;
+
+    if (!directory) {
+      return reply
+        .status(403)
+        .send({ message: "You should provide the directory of the project" });
+    }
+    const isAValidDirectory = helpers.isValidDirectory(directory);
+
+    if (!isAValidDirectory) {
+      return reply
+        .status(422)
+        .send({ message: "You should provide a valid directory" });
+    }
+    
+    try {
+      const result = await analyzeService.handleAnalyzeLocal(directory);
+      const filteredResult = result.filter(
+        (re) => !!re.smells && re.smells.length > 0
+      );
+      const output = await analyzeService.splitFilteredResults(filteredResult);
+      const csv = csvParser.parse(output);
+
+      reply.header(
+        "Content-Type",
+        "text/csv",
+        "Content-Disposition",
+        "attachment; filename=data.csv"
+      );
+      reply.send(csv);
+    } catch (error) {
+      console.error("error", error);
+      reply
+        .status(500)
+        .send({ message: "An error occurred while trying to parse local files" });
+    }
+  }
+
   async countTestFiles(request, reply) {
     const { repository } = request.body;
     if (!repository) {

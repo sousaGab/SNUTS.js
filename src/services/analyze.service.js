@@ -31,6 +31,33 @@ class AnalyzeService {
       throw error;
     }
   }
+
+  async handleAnalyzeLocal(dirname) {
+    const directory = path.resolve( path.dirname(""), dirname);
+    try {
+      const testFiles = await helpers.findTestFiles(directory);
+      const astFiles = testFiles.map((tf) => {
+        const testAst = astService.parseFileToAst(tf);
+        const testInfo = astService.getTestInfo(testAst);
+        return detectors.map((detector) => {
+          const relativeFilePath = path.relative(directory, tf);
+          const result = {
+            file: relativeFilePath,
+            type: detector.name.replace("detect", ""),
+            smells: detector(testAst),
+            itCount: testInfo.itCount,
+            describeCount: testInfo.describeCount,
+          };
+          return result;
+        });
+      });
+      return astFiles.flat();
+    } catch (error) {
+      console.error("Error when we tried to handle analyze local", error);
+      throw error;
+    }
+  }  
+
   async handleAnalyzeToCSV(repoUrl) {
     const __dirname = path.dirname("");
     const directory = path.resolve(__dirname, "./public");
@@ -74,6 +101,24 @@ class AnalyzeService {
       console.error("Error when we tried to count test files", error);
       throw error;
     }
+  }
+
+  async splitFilteredResults(filteredResult) {
+    let result = [];
+  
+    filteredResult.forEach(item => {
+      item.smells.forEach(smell => {
+        result.push({
+          file: item.file,
+          type: item.type,
+          smells: [smell],
+          itCount: item.itCount,
+          describeCount: item.describeCount
+        });
+      });
+    });
+  
+    return result;
   }
 }
 
