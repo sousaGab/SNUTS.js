@@ -73,12 +73,13 @@ class Helpers {
 
   async findTestFiles(directory) {
     const options = {
-      ignore: "node_modules",
+      ignore: ["**/node_modules/**"],
       cwd: directory,
       windowsPathsNoEscape: IS_WIN_SO,
       absolute: true,
       nodir: true,
     };
+
     const testFiles = await Promise.all(
       TEST_FILE_PATTERNS.map((pattern) => glob(pattern, options))
     );
