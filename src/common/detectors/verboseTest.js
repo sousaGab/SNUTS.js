@@ -1,4 +1,5 @@
 import traverse from "@babel/traverse";
+import astService from "../../services/ast.service";
 const traverseDefault =
   typeof traverse === "function" ? traverse : traverse.default;
 
@@ -7,7 +8,7 @@ const detectVerboseStatement = (ast) => {
   traverseDefault(ast, {
     BlockStatement(path) {
       const { loc } = path.node;
-      if (path.node.body.length > 13) {
+      if (astService.isTestCase(path.node) && path.node.body.length > 13) {
         smells.push({
           startLine: loc.start.line,
           endLine: loc.end.line,
