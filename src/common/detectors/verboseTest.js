@@ -8,7 +8,12 @@ const detectVerboseStatement = (ast) => {
   traverseDefault(ast, {
     BlockStatement(path) {
       const { loc } = path.node;
-      if (astService.isTestCase(path.node) && path.node.body.length > 13) {
+      const maybeTestCall = path.parentPath?.parentPath?.node;
+      if (
+        maybeTestCall?.type === "CallExpression" &&
+        astService.isTestCase(maybeTestCall) &&
+        path.node.body.length > 13
+      ) {
         smells.push({
           startLine: loc.start.line,
           endLine: loc.end.line,
