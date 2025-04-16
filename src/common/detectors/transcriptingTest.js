@@ -4,7 +4,7 @@ import astService from "../../services/ast.service.js";
 
 const traverseDefault =
   typeof traverse === "function" ? traverse : traverse.default;
-
+  
 const detectTranscriptingTest = (ast) => {
   const transcriptingTestSmells = [];
 
@@ -14,7 +14,8 @@ const detectTranscriptingTest = (ast) => {
       if (
         astService.isTestCase(path.node) &&
         args.length >= 2 &&
-        t.isFunction(args[1])
+        t.isFunction(args[1]) &&
+        t.isBlockStatement(args[1].body) // Ensure body is a BlockStatement
       ) {
         const body = args[1].body.body;
         for (const statement of body) {
