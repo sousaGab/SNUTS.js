@@ -15,7 +15,18 @@ const TEST_FILE_PATTERNS = [
   "**/*.specs.js",
   "**/*test_*.js",
   "**/*test-*.js",
+  "**/*Test*.js",
   "**/*Spec*.js",
+  "**/__tests__/**/*.js",
+  "**/__specs__/**/*.js",
+  "**/test/**/*.js",
+  "**/tests/**/*.js",
+  "**/spec/**/*.js",
+  "**/specs/**/*.js",
+  "**/test/**/*test*.js",
+  "**/test/**/*spec*.js", 
+  "**/tests/**/*test*.js",
+  "**/tests/**/*spec*.js",
 ];
 
 class Helpers {
@@ -73,7 +84,7 @@ class Helpers {
 
   async findTestFiles(directory) {
     const options = {
-      ignore: ["**/node_modules/**"],
+      ignore: ["**/node_modules/**", "**/contrib/**"],
       cwd: directory,
       windowsPathsNoEscape: IS_WIN_SO,
       absolute: true,
